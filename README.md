@@ -27,11 +27,19 @@ All six solo implementations reused the existing SDK for streaming and full audi
 
 The first two groups each ran Sol medium, high and xhigh three times per effort level. The four delegated runs paired each of Astra low and medium with each of Sol medium and high once.
 
-All 24 runs passed the save and restart checks. Early playback distinguished the groups. Every prepared-plan run started playback within its observation window, across all three Sol effort levels. No run in the other three groups met that check within its window. The groups differed in the information supplied, browser fixtures, observation windows and which roles were included in the cost. The results do not isolate the effect of any one model or workflow.
+All 24 runs passed the save and restart checks. The clearest difference appeared in the audio stream. With a prepared plan, Sol passed both early audio delivery and browser playback in 9/9 runs, across all three effort levels. With the original brief and two explorers, it passed both checks in 0/9, although editing during generation worked in 9/9. In that group, the client failed to receive the required audio bytes while the provider was still generating. A slow browser start alone cannot explain the misses. The prepared-plan group has no comparable observations for editing while pending or recovering a result after reopening, so its 9/9 applies only to the recorded checks.
+
+The original brief asked for a fast preview. Astra's six solo runs explicitly required playback before generation finished. The 0/9 and 6/6 figures describe how those two workflows behaved. They leave open which model would infer the streaming requirement from the same brief. The browser fixtures, observation windows and cost coverage also varied across groups.
 
 ## Independent code review
 
 Astra low and medium each reviewed the same two implementations. For sample A, each identified one of four previously fixed issues. For sample B, each identified one of three. Both efforts therefore scored 2/7 exact matches. The reference set covers known fixes only, and additional findings were not consistently adjudicated. These data support neither a false-positive estimate nor an overall ranking of review quality.
+
+## Comparison with the release benchmarks
+
+OpenAI reports that Sol scored within 0.5 points of Astra on FrontierCode 2.0 at about one-fifth the cost, with both models at max reasoning effort. FrontierCode evaluates whether changes to real codebases meet maintainers' merge standards. Our runs cover one task family at different effort levels. A local comparison of the score gap or the cost ratio would require matched model runs, acceptance criteria and cost coverage. The $1.15 mean for Sol with a prepared plan excludes planning; the $2.92 solo Astra mean includes it. [OpenAI release announcement](https://openai.com/index/introducing-gpt-6-2-astra-sol/)
+
+SDK reuse answers a narrower engineering question about whether an agent rebuilds an existing provider protocol. We did not independently grade overall code simplicity or test focus. The four read-only reviews cover Astra only, and the implementation data contain no matched runs of the preceding model generation. OpenAI's examples of cross-service debugging with Astra and PR review with Sol describe suggested uses. [ChatGPT Learn](https://learn.chatgpt.com/docs/whats-new/gpt-62-astra-sol)
 
 ## Baseline for future models
 
@@ -49,3 +57,13 @@ The **v1 baseline** is the six independent runs. The task combined streaming pre
 For a future comparison, keep the starting code, prompt, fixtures, observation windows and feedback policy fixed. Record at least three runs per effort level and report the first acceptance result separately from retests. Assign a new cohort when the project or acceptance criteria change, or when agents receive feedback before handoff. The solo runs used a real local browser, service process and database with a simulated upstream provider. The CSV files are sufficient to recompute the published aggregates. An exact rerun requires the original project and fixtures.
 
 The [implementation results](implementation.csv) list roles, cost coverage and check outcomes by run. A blank cell means no comparable observation was recorded. A failed check means the run did not meet that check's condition during its observation window. Receipt of audio bytes and actual browser playback are scored separately. The supervised run records the final build's cold start separately from its playback retests. The [review results](review.csv) list reference counts, exact matches, elapsed time and cost for each anonymized sample.
+
+## Open comparisons
+
+| Question | Matched comparison |
+|---|---|
+| Can Sol deliver the same behavior when the requirements are explicit? | Run Sol high solo three times under the six-run Astra protocol, including the seven-second playback window and no external feedback before handoff. The existing Astra runs provide the baseline. |
+| Which constraints does each model infer from the original brief? | Give Astra low and Sol high the same original brief in fresh solo runs. Before implementation, have each record its own acceptance criteria. Check whether it identified early playback, chose a design that supports it, and exercised it in the browser. This extra planning instruction defines a separate cohort for both models. |
+| Does higher effort or a newer generation change the result? | Repeat a matched cohort with Sol xhigh to test effort, or with GPT-6.1 Sol at the same effort to test generation. Vary one factor at a time. |
+
+To measure rework, record first-handoff acceptance, repair rounds, human review minutes and total API-equivalent cost through the first passing delivery, including planning, review and repairs. Keep unsuccessful runs and their costs in the record. Repetitions on the same task measure repeatability; additional task families are needed to assess how well the result generalizes.
