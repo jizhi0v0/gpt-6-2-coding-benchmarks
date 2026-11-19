@@ -1,0 +1,5 @@
+sample,reviewer,reference_items,exact_hits,api_usd,minutes
+A,Astra low,4,1,1.112622,3.08
+A,Astra medium,4,1,1.799678,4.31
+B,Astra low,3,1,0.911142,2.2
+B,Astra medium,3,1,1.422038,3.21
